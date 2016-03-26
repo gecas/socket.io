@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Socket.io </title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+</head>
+<body>
+<br>
+<div class="col-md-6 col-md-offset-3">
+<ul class="list-group">
+  <li v-for="message in messages" class="list-group-item">{{ message }}</li>
+</ul>
+	<br>
+	
+		<form v-on:submit="send">
+			<input class="form-control" v-model="message" type="text"><br>
+			<button type="submit" class="btn btn-warning form-control">Send</button>
+		</form>
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.19/vue.min.js"></script>
+	<script>
+		var socket = io();
+
+		new Vue({
+			el: 'body',
+
+			data: {
+				messages: [],
+				message: ''
+			},
+
+			ready: function(){
+				socket.on('chat.message', function(message){
+					this.messages.push(message);
+				}.bind(this));
+			},
+
+			methods: {
+				send: function(e){
+
+					socket.emit('chat.message', this.message);
+					this.message = '';
+					e.preventDefault();
+
+				}
+			}
+		})
+	</script>
+</body>
+</html>
